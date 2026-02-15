@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Hộp quà sinh nhật 💙</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+/* ===== RESET ===== */
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+  font-family: "Segoe UI", Arial, sans-serif;
+}
+
+body {
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  background: radial-gradient(circle at top, #123a6f, #020812);
+  color: #fff;
+}
+
+/* ===== SAO BAY NỀN ===== */
+.star {
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  background: #9ad7ff;
+  opacity: 0.8;
+  animation: starMove linear infinite;
+}
+
+@keyframes starMove {
+  from { transform: translateY(-10vh); }
+  to { transform: translateY(110vh); }
+}
+
+/* ===== TIM BAY ===== */
+.heart {
+  position: absolute;
+  font-size: 14px;
+  color: #9ad7ff;
+  animation: heartFloat 10s linear forwards;
+  opacity: 0;
+}
+
+@keyframes heartFloat {
+  0% { transform: translateY(100vh) scale(0.8); opacity: 0; }
+  20% { opacity: 1; }
+  100% { transform: translateY(-20vh) scale(1.6); opacity: 0; }
+}
+
+/* ===== MÀN KHÓA ===== */
+#lock {
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(145deg,#0b1d3a,#000);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 20;
+}
+
+.lock-box {
+  background: rgba(255,255,255,0.08);
+  border-radius: 24px;
+  padding: 32px;
+  text-align: center;
+  width: 300px;
+  box-shadow: 0 0 40px rgba(154,215,255,0.35);
+}
+
+.lock-box h2 {
+  color: #9ad7ff;
+  margin-bottom: 10px;
+}
+
+.lock-box p {
+  font-size: 14px;
+  color: #cce9ff;
+}
+
+.lock-box input {
+  width: 100%;
+  margin-top: 16px;
+  padding: 10px;
+  border-radius: 20px;
+  border: none;
+  text-align: center;
+  font-size: 16px;
+}
+
+.lock-box button {
+  margin-top: 16px;
+  padding: 10px 24px;
+  border-radius: 20px;
+  border: none;
+  background: #9ad7ff;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+/* ===== HỘP QUÀ ===== */
+#gift {
+  position: fixed;
+  inset: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  z-index: 10;
+}
+
+#gift h2 {
+  margin-bottom: 20px;
+  color: #9ad7ff;
+}
+
+.gift-box {
+  width: 180px;
+  height: 180px;
+  background: linear-gradient(145deg,#9ad7ff,#5fb6ff);
+  border-radius: 26px;
+  position: relative;
+  cursor: pointer;
+  box-shadow: 0 0 60px rgba(154,215,255,0.7);
+  animation: giftPulse 1.4s infinite;
+}
+
+.gift-box::before {
+  content: "";
+  position: absolute;
+  top: -28px;
+  left: 0;
+  width: 100%;
+  height: 36px;
+  background: linear-gradient(145deg,#bfe6ff,#7cc8ff);
+  border-radius: 20px;
+}
+
+@keyframes giftPulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.12); }
+  100% { transform: scale(1); }
+}
+
+/* ===== NỘI DUNG ===== */
+#content {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 5;
+}
+
+.center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%,-50%);
+  width: 90%;
+  max-width: 380px;
+  text-align: center;
+}
+
+.center h1 {
+  color: #9ad7ff;
+  margin-bottom: 14px;
+}
+
+.message-box {
+  border: 2px solid #9ad7ff;
+  padding: 26px;
+  border-radius: 22px;
+  background: rgba(154,215,255,0.08);
+  box-shadow: 0 0 35px rgba(154,215,255,0.45);
+}
+
+.message-box p {
+  line-height: 1.8;
+  font-size: 16px;
+  color: #ffd1e8;
+}
+
+.signature {
+  margin-top: 18px;
+  color: #9ad7ff;
+}
+
+/* ===== CHỮ BAY ===== */
+.text {
+  position: absolute;
+  font-size: 18px;
+  color: #9ad7ff;
+  opacity: 0;
+  animation: textFloat 9s linear forwards;
+}
+
+@keyframes textFloat {
+  0% { transform: translateY(100vh); opacity: 0; }
+  15% { opacity: 1; }
+  100% { transform: translateY(-15vh); opacity: 0; }
+}
+</style>
+</head>
+
+<body>
+
+<audio id="bgm" loop>
+  <source src="music.mp3" type="audio/mpeg">
+</audio>
+
+<div id="lock">
+  <div class="lock-box">
+    <h2>🔐 Mở hộp quà</h2>
+    <p>Gợi ý: ngày sinh của em 💙</p>
+    <input type="password" id="pass" placeholder="••••">
+    <button onclick="check()">Mở</button>
+  </div>
+</div>
+
+<div id="gift">
+  <h2>🎁 Chạm để mở quà</h2>
+  <div class="gift-box" onclick="openGift()"></div>
+</div>
+
+<div id="content">
+  <div class="center">
+    <h1>Gửi vợ iu 💙</h1>
+    <div class="message-box">
+      <p>
+        Hôm nay là sinh nhật em,  
+        anh không biết làm gì thật lớn lao,  
+        chỉ muốn gói tất cả cảm xúc,  
+        sự quan tâm và chân thành của anh  
+        vào món quà nhỏ này dành riêng cho em.
+        <br><br>
+        Món quà này không phải thứ có thể cầm nắm,  
+        mà là những điều anh trân trọng  
+        từ những chuyện rất nhỏ em làm,  
+        để rồi anh nhận ra  
+        mình đã tin em hơn từng ngày.
+        <br><br>
+        Bây giờ thì anh tin tưởng em thật rồi,  
+        tin vào hiện tại,  
+        và tin rằng người anh chọn  
+        chính là em.
+        <br><br>
+        Mong rằng khi mở món quà này,  
+        em sẽ mỉm cười  
+        và cảm nhận được  
+        rằng có một người  
+        luôn thương em theo cách rất riêng 💙
+      </p>
+    </div>
+    <div class="signature">— chồng yêu của em —</div>
+  </div>
+</div>
+
+<script>
+const PASSWORD = "1602";
+
+/* Kiểm tra mật khẩu */
+function check() {
+  if (document.getElementById("pass").value === PASSWORD) {
+    document.getElementById("lock").style.display = "none";
+    document.getElementById("gift").style.display = "flex";
+  } else {
+    alert("Sai mật khẩu rồi 😝");
+  }
+}
+
+/* Mở quà */
+function openGift() {
+  document.getElementById("gift").style.display = "none";
+  document.getElementById("content").style.display = "block";
+
+  const music = document.getElementById("bgm");
+  music.volume = 0.6;
+  music.play();
+
+  startHearts();
+  startTexts();
+}
+
+/* Sao nền */
+for (let i = 0; i < 80; i++) {
+  const s = document.createElement("div");
+  s.className = "star";
+  s.style.left = Math.random() * 100 + "vw";
+  s.style.animationDuration = (6 + Math.random()*6) + "s";
+  document.body.appendChild(s);
+}
+
+/* Tim bay */
+function startHearts() {
+  setInterval(() => {
+    const h = document.createElement("div");
+    h.className = "heart";
+    h.innerText = "💙";
+    h.style.left = Math.random()*100+"vw";
+    h.style.fontSize = (12 + Math.random()*18) + "px";
+    document.body.appendChild(h);
+    setTimeout(()=>h.remove(),10000);
+  }, 400);
+}
+
+/* Chữ bay */
+function startTexts() {
+  const msgs = [
+    "Love you 💙",
+    "Happy Birthday 🎉",
+    "My only one ✨",
+    "Forever together 💫",
+    "You are my world 💖"
+  ];
+
+  setInterval(() => {
+    const t = document.createElement("div");
+    t.className = "text";
+    t.style.left = Math.random()*100+"vw";
+    t.innerText = msgs[Math.floor(Math.random()*msgs.length)];
+    document.body.appendChild(t);
+    setTimeout(()=>t.remove(),9000);
+  }, 500);
+}
+</script>
+
+</body>
+</html>
+
+
